@@ -1,0 +1,43 @@
+stages:
+  data_ingestion:
+    cmd: python -m src.data.data_ingestion
+    deps:
+    - src/data/data_ingestion.py
+    outs:
+    - data/raw/data.csv
+
+  data_preprocessing:
+    cmd: python -m src.data.data_preprocessing
+    deps:
+    - data/raw/data.csv
+    - src/data/data_preprocessing.py
+    outs:
+    - data/processed/test_data.csv
+    - data/processed/train_data.csv
+
+  feature_engineering:
+    cmd: python -m src.features.feature_engineering
+    deps:
+    - data/processed/test_data.csv
+    - data/processed/train_data.csv
+    - src/features/feature_engineering.py
+    outs:
+    - data/vectorized/test_vec.joblib
+    - data/vectorized/train_vec.joblib
+    - model/vectorizer.joblib
+
+  model_training:
+    cmd: python src/models/modelling_LGBM.py
+    deps:
+    - data/vectorized/train_vec.joblib
+    - src/models/modelling_LGBM.py
+    outs:
+    - model/model.joblib
+  evaluation:
+    cmd: python src/models/evaluation.py
+    deps:
+    - data/processed/test_data.csv
+    - data/vectorized/test_vec.joblib
+    - model/model.joblib
+    outs:
+    - reports/scores.json
