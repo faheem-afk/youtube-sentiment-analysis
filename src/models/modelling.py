@@ -61,7 +61,7 @@ def bert_modelling():
 
     train_loader = DataLoader(train_ds, shuffle=True, batch_size=32, drop_last=True)
 
-    model = AutoModelForSequenceClassification.from_pretrained("bert-base-uncased", num_labels=3).to('cuda')
+    model = AutoModelForSequenceClassification.from_pretrained("bert-base-uncased", num_labels=3).to('cpu')
 
     optimizer = AdamW(
         model.parameters(),       
@@ -77,7 +77,7 @@ def bert_modelling():
         train_epoch_loss = 0.0
         for batch in train_loader:
             optimizer.zero_grad()
-            batch = {k: v.to('cuda')  for k, v in batch.items()}
+            batch = {k: v.to('cpu')  for k, v in batch.items()}
             outputs = model(**batch)
             loss = outputs.loss
             loss.backward()

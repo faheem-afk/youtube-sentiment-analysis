@@ -15,29 +15,20 @@ stages:
     - data/processed/test_data.csv
     - data/processed/train_data.csv
 
-  feature_engineering:
-    cmd: python -m src.features.feature_engineering
-    deps:
-    - data/processed/test_data.csv
-    - data/processed/train_data.csv
-    - src/features/feature_engineering.py
-    outs:
-    - data/vectorized/test_vec.joblib
-    - data/vectorized/train_vec.joblib
-    - model/vectorizer.joblib
-
-  model_training:
-    cmd: python src/models/modelling_LGBM.py
-    deps:
-    - data/vectorized/train_vec.joblib
-    - src/models/modelling_LGBM.py
-    outs:
-    - model/model.joblib
+  # model_training:
+  #   cmd: python src/models/modelling.py
+  #   deps:
+  #   - data/processed/train_data.csv
+  #   - src/models/modelling.py
+  #   outs:
+  #   - model/model_cpu.pth
+  
   evaluation:
     cmd: python src/models/evaluation.py
     deps:
     - data/processed/test_data.csv
-    - data/vectorized/test_vec.joblib
-    - model/model.joblib
+    - model/model_cpu.pth
+    - src/models/evaluation.py
     outs:
     - reports/scores.json
+  

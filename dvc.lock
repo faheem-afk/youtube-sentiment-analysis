@@ -83,16 +83,16 @@ stages:
       hash: md5
       md5: b1e42aa6c027382d019f187b9162ede3
       size: 1399936
-    - path: data/vectorized/test_vec.joblib
+    - path: model/model_cpu.pth
       hash: md5
-      md5: 556525fe159639e9c4ac4197d821f0cd
-      size: 588800241
-    - path: model/model.joblib
+      md5: 809eebad539909aba7cafff3df97230d
+      size: 438017402
+    - path: src/models/evaluation.py
       hash: md5
-      md5: 2f7ae0852a8462dc76e777ca224a980d
-      size: 681244
+      md5: 1c75b484035a45183eb6fdab4eb2791e
+      size: 1728
     outs:
     - path: reports/scores.json
       hash: md5
-      md5: e4494d7a8c552f347521350541bb5c28
-      size: 761
+      md5: d964bc1fabf423e6e6551187f28a8cc2
+      size: 760
