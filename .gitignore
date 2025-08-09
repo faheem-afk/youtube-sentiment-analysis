@@ -29,7 +29,7 @@ prac.ipynb
 *.manifest
 *.spec
 faheem-afk-keypair.pem
-
+sent-bert
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt

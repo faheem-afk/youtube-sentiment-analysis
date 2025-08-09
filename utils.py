@@ -5,6 +5,7 @@ import yaml
 from logger_ import logger
 from exp import CustomException
 import joblib
+from transformers import AutoTokenizer
 
 
 def load_data(path: str):
@@ -55,9 +56,20 @@ def save_model(model, path) -> None:
     
     
 
-def save_artifact_info(artifact_uri, file):
+def save_artifact_info(artifact_uri, run_id, file):
     with open(file, 'w') as f:
         json.dump({
+            'run_id': run_id,
             'artifact_uri': artifact_uri
         }, f, indent=2)
         
+
+
+def get_encoding(text):
+    tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased") 
+    inputs = tokenizer(text, 
+                       return_tensors="pt", 
+                       truncation=True, 
+                       padding='max_length')
+
+    return inputs

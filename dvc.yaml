@@ -36,7 +36,7 @@ stages:
     cmd: python src/models/register_model.py
     deps:
     - experiment_info.json
-    
+
 
   
   

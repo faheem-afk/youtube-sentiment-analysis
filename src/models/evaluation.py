@@ -1,7 +1,5 @@
 from utils import *
-from sklearn.metrics import classification_report, confusion_matrix
-import matplotlib.pyplot as plt
-import seaborn as sns
+from sklearn.metrics import classification_report
 import torch
 from transformers import AutoTokenizer
 from transformers import AutoModelForSequenceClassification
@@ -59,13 +57,13 @@ def eval_():
         
         mlflow.pytorch.log_model(
         pytorch_model=model,
-        name='model',                      
+        name='model',                    
         input_example=None,
-        signature = None
+        signature = None,
         )
         
-        model_uri = mlflow.get_artifact_uri()
-        save_artifact_info(model_uri, 'experiment_info.json')
+        artifact_uri = mlflow.get_artifact_uri()
+        save_artifact_info(artifact_uri, run.info.run_id, 'experiment_info.json')
     
     
 if __name__ == "__main__":
