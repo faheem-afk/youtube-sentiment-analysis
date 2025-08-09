@@ -1,3 +1,4 @@
+import json
 import os
 import pandas as pd
 import yaml 
@@ -51,3 +52,12 @@ def save_model(model, path) -> None:
         logger.info(f"Saving model to {file_path}")
     except Exception as e:
         raise CustomException(e)
+    
+    
+
+def save_artifact_info(artifact_uri, file):
+    with open(file, 'w') as f:
+        json.dump({
+            'artifact_uri': artifact_uri
+        }, f, indent=2)
+        

@@ -30,5 +30,13 @@ stages:
     - model/model_cpu.pth
     - src/models/evaluation.py
     outs:
-    - reports/scores.json
+    - experiment_info.json
+
+  register_model:
+    cmd: python src/models/register_model.py
+    deps:
+    - experiment_info.json
+    
+
+  
   

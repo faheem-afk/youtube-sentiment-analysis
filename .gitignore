@@ -28,6 +28,7 @@ prac.ipynb
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
 *.manifest
 *.spec
+faheem-afk-keypair.pem
 
 # Installer logs
 pip-log.txt
@@ -87,3 +88,4 @@ target/
 
 # Mypy cache
 .mypy_cache/
+/experiment_info.json

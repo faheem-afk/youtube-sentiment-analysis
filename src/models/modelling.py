@@ -2,11 +2,8 @@ from torch.utils.data import DataLoader
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import torch
 from torch.optim import AdamW
-from torch import nn
 from dataset_ import MyDataSet
 from utils import *
-
-
 
 
 def load_params(params_path: str) -> dict:

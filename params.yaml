@@ -1,18 +1,2 @@
 data_preprocessing:
   test_size: 0.2
-
-feature_engineering:
-  max_features: 10000
-  ngram_range: (1,2)
-
-model_training:
-  objective: 'multiclass'
-  num_class: 3
-  metric: 'multi_logloss'
-  is_unbalance: True
-  class_weight: "balanced"
-  reg_alpha: 0.1
-  reg_lambda: 0.1
-  learning_rate: 0.08
-  max_depth: 20
-  n_estimators: 36
