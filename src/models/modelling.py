@@ -3,7 +3,11 @@ from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import torch
 from torch.optim import AdamW
 from dataset_ import MyDataSet
+sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../..'))
 from utils import *
+from mlflow.models import infer_signature
+from mlflow.tracking import MlflowClient
+import mlflow
 
 
 def load_params(params_path: str) -> dict:
@@ -51,8 +55,7 @@ def bert_modelling():
     tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")    
 
     current_dir_name = os.path.dirname(os.path.abspath(__file__))
-    train_data = load_data(os.path.join(current_dir_name,
-                                        '../../data/processed/train_data.csv')).dropna()
+    train_data = load_data('data/processed/train_data.csv').dropna()
 
     train_ds = MyDataSet(train_data, tokenizer, max_len=128)
 
@@ -87,7 +90,30 @@ def bert_modelling():
             
     print(f"Avg Train_loss per Sample per epoch: {total_loss / 10}")
 
-    torch.save(model.state_dict(), os.path.join(current_dir_name, '../../model/model.pth'))
+    mlflow.set_tracking_uri("http://35.175.240.84:5000")
+    mlflow.set_experiment('dvc pipeline')
+    
+    with mlflow.start_run() as run:
+        input_examples = train_data['text'][: 4].values.tolist()
+        encoded_inputs = get_encoding(input_examples)
+        
+        signature = infer_signature(input_examples, model(**encoded_inputs).logits.detach().numpy().tolist())
+        
+        mlflow.pytorch.log_model(
+        pytorch_model=model,
+        artifact_path='model',                    
+        signature = signature,
+        )
+        
+        client = MlflowClient()
+
+        local_path = client.download_artifacts(run.info.run_id, "model/MLmodel")
+        with open(local_path, "r") as f:
+            mlmodel_data = yaml.safe_load(f)
+
+        artifact_path = mlmodel_data.get("artifact_path")
+        save_artifact_info(artifact_path, run_id, 'experiment_info.json')
+    
 
 if __name__ == "__main__":
     bert_modelling()

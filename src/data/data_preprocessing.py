@@ -40,8 +40,7 @@ def process_comment(comment):
 
 def data_pre():
     
-    current_dir_path = os.path.dirname(os.path.abspath(__file__))
-    params_path = os.path.join(current_dir_path, '../../params.yaml')
+    params_path = 'params.yaml'
     params = load_params(params_path=params_path)
     test_size = params['data_preprocessing']['test_size']
   
@@ -53,8 +52,8 @@ def data_pre():
     train_data = train_data.reset_index(drop=True)
     test_data = test_data.reset_index(drop=True)
     
-    save_data(train_data, os.path.join(current_dir_path, "../../data/processed/train_data.csv"))
-    save_data(test_data, os.path.join(current_dir_path, "../../data/processed/test_data.csv"))
+    save_data(train_data, 'data/processed/train_data.csv')
+    save_data(test_data, 'data/processed/test_data.csv')
     
 
 if __name__ == "__main__":

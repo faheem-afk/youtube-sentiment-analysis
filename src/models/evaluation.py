@@ -9,19 +9,22 @@ from transformers import AutoModelForSequenceClassification
 import mlflow
 from dataset_ import MyDataSet
 from torch.utils.data import DataLoader
+from mlflow.models import infer_signature
+from mlflow.tracking import MlflowClient
 
 
 def eval_():
     
-    current_dir_name = os.path.dirname(os.path.abspath(__file__))
-    param_path = os.path.join(current_dir_name, '../../params.yaml')
+    # current_dir_name = os.path.dirname(os.path.abspath(__file__))
+    param_path = 'params.yaml'
     params = load_params(param_path)
-    # model = AutoModelForSequenceClassification.from_pretrained("bert-base-uncased", num_labels=3).to('cpu')  
     
-    model = mlflow.pytorch.load_model("s3://ysa-bucketv1/659050820026623362/models/m-b0fd8c06eeef45fa8c1cb1d19f67329e/artifacts").to('cpu')
-    # model.load_state_dict(torch.load(os.path.join(current_dir_name, "../../model/model_cpu.pth")))
+    file = open("experiment_info.json", "r")
+    model_uri = json.load(file)['artifact_uri']
+    model = mlflow.pytorch.load_model(model_uri).to('cpu')
     model.eval() 
-    data = load_data(os.path.join(current_dir_name, '../../data/processed/test_data.csv')).dropna()
+    
+    data = load_data('data/processed/test_data.csv').dropna()
     y_test = data.iloc[:, -1]
     os.environ["TOKENIZERS_PARALLELISM"] = "false"
     tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased") 
@@ -29,15 +32,14 @@ def eval_():
     test_ds = MyDataSet(data, tokenizer, max_len=128)
     test_loader = DataLoader(test_ds, shuffle=False, batch_size=32)
     
-
     preds = []
     with torch.no_grad():
         for idx, batch in enumerate(test_loader):
             outputs = model(**batch)
             probs = outputs.logits.softmax(dim=1)
             preds.extend(probs.argmax(dim=1).numpy())
-        
-    
+           
+
     report = classification_report(y_test, preds, output_dict=True)   
 
     
@@ -60,16 +62,7 @@ def eval_():
         for _, attr in params.items():
             for key, value in attr.items():
                 mlflow.log_param(key, value)  
-        
-        mlflow.pytorch.log_model(
-        pytorch_model=model,
-        name='model',                    
-        input_example=None,
-        signature = None,
-        )
-        
-        artifact_uri = mlflow.get_artifact_uri()
-        save_artifact_info(artifact_uri, run.info.run_id, 'experiment_info.json')
+
     
     
 if __name__ == "__main__":

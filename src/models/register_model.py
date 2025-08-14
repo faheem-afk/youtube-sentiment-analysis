@@ -8,7 +8,7 @@ def model_stages(model_name):
     model_info = json.load(open('experiment_info.json', 'r'))
     
     client = mlflow.tracking.MlflowClient()
-    mv = mlflow.register_model(model_info['artifact_uri'], model_name)
+    mv = mlflow.register_model(model_info["artifact_uri"], model_name)
     client.transition_model_version_stage(
         name=model_name,
         version = mv.version,

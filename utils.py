@@ -59,8 +59,8 @@ def save_model(model, path) -> None:
 def save_artifact_info(artifact_uri, run_id, file):
     with open(file, 'w') as f:
         json.dump({
-            'run_id': run_id,
-            'artifact_uri': artifact_uri
+            'artifact_uri': artifact_uri,
+            'run_id': run_id
         }, f, indent=2)
         
 
@@ -70,6 +70,6 @@ def get_encoding(text):
     inputs = tokenizer(text, 
                        return_tensors="pt", 
                        truncation=True, 
-                       padding='longest')
+                       padding='max_length')
 
     return inputs

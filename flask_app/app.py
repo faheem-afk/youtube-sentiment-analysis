@@ -17,14 +17,16 @@ import io, base64, math
 
 from wordcloud import WordCloud, STOPWORDS
 import matplotlib.pyplot as plt
-
+import json
 
 app = Flask(__name__)
 CORS(app)
 
 
 labels= {0:'negative', 1: "neutral", 2: "positive"}
-model = mlflow.pytorch.load_model("./sent-bert/model").to('mps')
+file = open("experiment_info.json", 'r')
+model_uri = json.load(file)['artifact_uri']
+model = mlflow.pytorch.load_model(model_uri).to('mps')
 model.eval()
 stopwords = set(STOPWORDS)
 
@@ -133,8 +135,7 @@ def time_series_plot(final_dict):
 def predict():
     
     data = request.json
-
-    print('done')
+    
     texts = [comment['text'] for comment in data['comments']]
     timestamps = [comment['timestamp'] for comment in data['comments']]
     final_predictions = predict_labels(texts)
@@ -178,7 +179,7 @@ def predict():
         
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', debug=True, port=5001)
+    app.run(host='0.0.0.0', debug=True, port=5002)
 
 
 

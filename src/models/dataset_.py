@@ -4,7 +4,7 @@ import torch
 class MyDataSet(Dataset):
     def __init__(self, data, tokenizer, max_len):
         self.text = data['text'].tolist()
-        self.label = data['label'].tolist()
+        # self.label = data['label'].tolist()
         self.tokenizer = tokenizer
         self.max_len = max_len
         
@@ -25,6 +25,6 @@ class MyDataSet(Dataset):
         
         return {
             "input_ids" : input_ids.to('cpu'),
-            "labels": torch.tensor(self.label[idx], dtype=torch.long).to('cpu'),
+            # "labels": torch.tensor(self.label[idx], dtype=torch.long).to('cpu'),
             "attention_mask": attention_mask.to('cpu')
         }
