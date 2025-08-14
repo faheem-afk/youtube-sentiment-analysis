@@ -30,29 +30,31 @@ def eval_():
     test_loader = DataLoader(test_ds, shuffle=False, batch_size=16)
     
 
-    # preds = []
-    # with torch.no_grad():
-    #     for batch in test_loader:
-    #         outputs = model(**batch)
-    #         probs = outputs.logits.softmax(dim=1)
-    #         preds.extend(probs.argmax(dim=1).numpy())
+    preds = []
+    with torch.no_grad():
+        for idx, batch in enumerate(test_loader):
+            outputs = model(**batch)
+            probs = outputs.logits.softmax(dim=1)
+            preds.extend(probs.argmax(dim=1).numpy())
+            if idx == 2:
+                break
     
-    # report = classification_report(y_test, preds, output_dict=True)   
+    report = classification_report(y_test, preds, output_dict=True)   
 
     
     mlflow.set_tracking_uri("http://35.175.240.84:5000")
     mlflow.set_experiment('dvc pipeline')
     with  mlflow.start_run() as run:
-        # for label, score_dic in report.items():
-        #     if isinstance(score_dic, dict):
-        #         mlflow.log_metrics(
-        #             {
-        #                 f"test_{label}_precision": score_dic['precision'],
-        #                 f"test_{label}_recall": score_dic['recall'],
-        #                 f"test_{label}_f1-score": score_dic['f1-score'],
+        for label, score_dic in report.items():
+            if isinstance(score_dic, dict):
+                mlflow.log_metrics(
+                    {
+                        f"test_{label}_precision": score_dic['precision'],
+                        f"test_{label}_recall": score_dic['recall'],
+                        f"test_{label}_f1-score": score_dic['f1-score'],
                      
-        #              }    
-        #         )
+                     }    
+                )
         for key, value in model.config.to_dict().items():
             mlflow.log_param(key, value)
         
