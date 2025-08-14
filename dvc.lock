@@ -83,23 +83,19 @@ stages:
       hash: md5
       md5: b1e42aa6c027382d019f187b9162ede3
       size: 1399936
-    - path: model/model_cpu.pth
-      hash: md5
-      md5: 809eebad539909aba7cafff3df97230d
-      size: 438017402
     - path: src/models/evaluation.py
       hash: md5
-      md5: ef34b1b6dcf4c2a28e37a61996c33edb
-      size: 2631
+      md5: f5e98fb081281988cbf414591beecf2a
+      size: 2786
     outs:
     - path: experiment_info.json
       hash: md5
-      md5: b6f0fe79a2feca971bac88413c54c30d
+      md5: b6f07f2434dc022e7130fea0fd6110a0
       size: 151
   register_model:
     cmd: python src/models/register_model.py
     deps:
     - path: experiment_info.json
       hash: md5
-      md5: b6f0fe79a2feca971bac88413c54c30d
+      md5: b6f07f2434dc022e7130fea0fd6110a0
       size: 151
