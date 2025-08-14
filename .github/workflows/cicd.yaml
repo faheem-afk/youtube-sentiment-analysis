@@ -1,6 +1,6 @@
 name: CICD Pipeline
 
-on: Push
+on: push
 
 jobs: 
   model-deployment:
