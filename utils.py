@@ -70,6 +70,6 @@ def get_encoding(text):
     inputs = tokenizer(text, 
                        return_tensors="pt", 
                        truncation=True, 
-                       padding='max_length')
+                       padding='longest')
 
     return inputs

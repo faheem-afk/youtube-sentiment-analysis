@@ -3,7 +3,7 @@ import json
 
 
 def model_stages(model_name):
-    mlflow.set_tracking_uri("http://54.162.237.251:5000")
+    mlflow.set_tracking_uri("http://35.175.240.84:5000")
     mlflow.set_experiment('dvc pipeline')
     model_info = json.load(open('experiment_info.json', 'r'))
     

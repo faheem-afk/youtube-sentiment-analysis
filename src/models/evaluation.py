@@ -35,7 +35,7 @@ def eval_():
     report = classification_report(y_test, preds, output_dict=True)   
 
     
-    mlflow.set_tracking_uri("http://54.162.237.251:5000")
+    mlflow.set_tracking_uri("http://35.175.240.84:5000")
     mlflow.set_experiment('dvc pipeline')
     with  mlflow.start_run() as run:
         for label, score_dic in report.items():
