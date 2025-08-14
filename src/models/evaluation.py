@@ -27,7 +27,7 @@ def eval_():
     tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased") 
     
     test_ds = MyDataSet(data, tokenizer, max_len=128)
-    test_loader = DataLoader(test_ds, shuffle=False, batch_size=16)
+    test_loader = DataLoader(test_ds, shuffle=False, batch_size=32)
     
 
     preds = []
@@ -36,8 +36,7 @@ def eval_():
             outputs = model(**batch)
             probs = outputs.logits.softmax(dim=1)
             preds.extend(probs.argmax(dim=1).numpy())
-            if idx == 2:
-                break
+        
     
     report = classification_report(y_test, preds, output_dict=True)   
 
