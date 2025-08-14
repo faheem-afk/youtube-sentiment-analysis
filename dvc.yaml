@@ -27,7 +27,6 @@ stages:
     cmd: python src/models/evaluation.py
     deps:
     - data/processed/test_data.csv
-    - model/model_cpu.pth
     - src/models/evaluation.py
     outs:
     - experiment_info.json
