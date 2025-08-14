@@ -34,5 +34,34 @@ jobs:
           AWS_DEFAULT_REGION: us-east-1
         run: |
           dvc repro
+      
+      - name: Push DVC-tracked data to remote
+        run: |
+          dvc push 
+        
+      - name: Configure Git
+        run: |
+          git configure --global user.name "github-actions[bot]"
+          git configure --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+      - name: Add changes to Git
+        run: |
+          git add .
+          
+      - name: Commit changes
+        if: ${{ github.actor != 'github-actions[bot]' }}
+        run: |
+          git commit -m"Automated commit of DVC outputs and updated code"
+      
+      - name: Push changes
+        if: ${{ github.actor != 'github-actions[bot]' }}
+        env: 
+          GITHUB_TOKEN: ${{ secrets.CI }}
+        run: |
+          git push origin ${{ github.ref_name }}
 
-  
+          
+        
+      
+        
+          

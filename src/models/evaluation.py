@@ -16,7 +16,7 @@ def eval_():
     model = AutoModelForSequenceClassification.from_pretrained("bert-base-uncased", num_labels=3).to('cpu')  
     tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased") 
     
-    model = mlflow.pytorch.load_model("s3://ysa-bucketv1/659050820026623362/models")
+    model = mlflow.pytorch.load_model("s3://ysa-bucketv1/659050820026623362/models/m-b0fd8c06eeef45fa8c1cb1d19f67329e/artifacts")
     # model.load_state_dict(torch.load(os.path.join(current_dir_name, "../../model/model_cpu.pth")))
     model.eval() 
     data = load_data(os.path.join(current_dir_name, '../../data/processed/test_data.csv')).dropna()
