@@ -16,9 +16,9 @@ def eval_():
     current_dir_name = os.path.dirname(os.path.abspath(__file__))
     param_path = os.path.join(current_dir_name, '../../params.yaml')
     params = load_params(param_path)
-    model = AutoModelForSequenceClassification.from_pretrained("bert-base-uncased", num_labels=3).to('cpu')  
+    # model = AutoModelForSequenceClassification.from_pretrained("bert-base-uncased", num_labels=3).to('cpu')  
     
-    model = mlflow.pytorch.load_model("s3://ysa-bucketv1/659050820026623362/models/m-b0fd8c06eeef45fa8c1cb1d19f67329e/artifacts")
+    model = mlflow.pytorch.load_model("s3://ysa-bucketv1/659050820026623362/models/m-b0fd8c06eeef45fa8c1cb1d19f67329e/artifacts").to('cpu')
     # model.load_state_dict(torch.load(os.path.join(current_dir_name, "../../model/model_cpu.pth")))
     model.eval() 
     data = load_data(os.path.join(current_dir_name, '../../data/processed/test_data.csv')).dropna()
