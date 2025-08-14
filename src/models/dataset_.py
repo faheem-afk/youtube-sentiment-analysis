@@ -24,7 +24,7 @@ class MyDataSet(Dataset):
         attention_mask = encodings['attention_mask'].squeeze(0)
         
         return {
-            "input_ids" : input_ids,
-            "labels": torch.tensor(self.label[idx], dtype=torch.long),
-            "attention_mask": attention_mask
+            "input_ids" : input_ids.to('cpu'),
+            "labels": torch.tensor(self.label[idx], dtype=torch.long).to('cpu'),
+            "attention_mask": attention_mask.to('cpu')
         }
