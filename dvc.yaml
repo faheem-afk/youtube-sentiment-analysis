@@ -15,21 +15,21 @@ stages:
     - data/processed/test_data.csv
     - data/processed/train_data.csv
 
-  model_training:
-    cmd: python src/models/modelling.py
-    deps:
-    - data/processed/train_data.csv
-    - src/models/modelling.py
-    outs:
-    - experiment_info.json
-  
+  # model_training:
+  #   cmd: python src/models/modelling.py
+  #   deps:
+  #   - data/processed/train_data.csv
+  #   - src/models/modelling.py
+ 
   evaluation:
     cmd: python src/models/evaluation.py
     deps:
     - data/processed/test_data.csv
     - src/models/evaluation.py
+
+    outs:
     - experiment_info.json
-   
+  
 
   register_model:
     cmd: python src/models/register_model.py

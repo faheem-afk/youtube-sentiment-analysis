@@ -62,7 +62,7 @@ def bert_modelling():
 
     train_loader = DataLoader(train_ds, shuffle=True, batch_size=32, drop_last=True)
 
-    model = AutoModelForSequenceClassification.from_pretrained("bert-base-uncased", num_labels=3).to('cpu')
+    model = AutoModelForSequenceClassification.from_pretrained("bert-base-uncased", num_labels=3).to('mps')
 
     optimizer = AdamW(
         model.parameters(),       
@@ -78,7 +78,7 @@ def bert_modelling():
         train_epoch_loss = 0.0
         for batch in train_loader:
             optimizer.zero_grad()
-            batch = {k: v.to('cpu')  for k, v in batch.items()}
+            batch = {k: v.to('mps')  for k, v in batch.items()}
             outputs = model(**batch)
             loss = outputs.loss
             loss.backward()
@@ -90,30 +90,13 @@ def bert_modelling():
         print(f"""Avg train_loss per sample for epoch {epoch+1}:{train_epoch_loss / len(train_ds)}""")
             
     print(f"Avg Train_loss per Sample per epoch: {total_loss / 10}")
-
-    mlflow.set_tracking_uri("http://35.175.240.84:5000")
-    mlflow.set_experiment('dvc pipeline')
     
-    with mlflow.start_run() as run:
-        input_examples = train_data['text'][: 4].values.tolist()
-        encoded_inputs = get_encoding(input_examples)
-        signature = infer_signature(input_examples, model(**encoded_inputs).logits.detach().numpy().tolist())
-        
-        mlflow.pytorch.log_model(
-        pytorch_model=model,
-        artifact_path='model',                    
-        signature = signature,
-        )
-        
-        client = MlflowClient()
-
-        local_path = client.download_artifacts(run.info.run_id, "model/MLmodel")
-        with open(local_path, "r") as f:
-            mlmodel_data = yaml.safe_load(f)
-
-        artifact_path = mlmodel_data.get("artifact_path")
-        save_artifact_info(artifact_path, run.run_info.run_id, 'experiment_info.json')
+    torch.save(model.state_dict(), "model/model_mps.pth")
     
 
 if __name__ == "__main__":
     bert_modelling()
+    
+    
+    
+    

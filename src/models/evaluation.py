@@ -19,10 +19,10 @@ def eval_():
     param_path = 'params.yaml'
     params = load_params(param_path)
     
-    file = open("experiment_info.json", "r")
-    model_uri = json.load(file)['artifact_uri']
-    model = mlflow.pytorch.load_model(model_uri).to('cpu')
-    model.eval() 
+    model = AutoModelForSequenceClassification.from_pretrained("bert-base-uncased", num_labels=3).to('cpu')
+    
+    model.load_state_dict(torch.load("model/model_mps.pth", map_location="cpu"))
+    model.eval()
     
     data = load_data('data/processed/test_data.csv').dropna()
     y_test = data.iloc[:, -1]
@@ -63,6 +63,25 @@ def eval_():
             for key, value in attr.items():
                 mlflow.log_param(key, value)  
 
+
+        input_examples = data['text'][: 2].values.tolist()
+        encoded_inputs = get_encoding(input_examples)
+        signature = infer_signature(input_examples, model(**encoded_inputs).logits.detach().numpy().tolist())
+        
+        mlflow.pytorch.log_model(
+        pytorch_model=model,
+        artifact_path='model',                    
+        signature = signature,
+        )
+        
+        client = MlflowClient()
+
+        local_path = client.download_artifacts(run.info.run_id, "model/MLmodel")
+        with open(local_path, "r") as f:
+            mlmodel_data = yaml.safe_load(f)
+
+        artifact_path = mlmodel_data.get("artifact_path")
+        save_artifact_info(artifact_path, run.info.run_id, 'experiment_info.json')
     
     
 if __name__ == "__main__":
