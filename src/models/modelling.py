@@ -62,7 +62,7 @@ def bert_modelling():
 
     train_loader = DataLoader(train_ds, shuffle=True, batch_size=32, drop_last=True)
 
-    model = AutoModelForSequenceClassification.from_pretrained("bert-base-uncased", num_labels=3).to('mps')
+    model = AutoModelForSequenceClassification.from_pretrained("bert-base-uncased", num_labels=3).to('cpu')
 
     optimizer = AdamW(
         model.parameters(),       
@@ -78,7 +78,7 @@ def bert_modelling():
         train_epoch_loss = 0.0
         for batch in train_loader:
             optimizer.zero_grad()
-            batch = {k: v.to('mps')  for k, v in batch.items()}
+            batch = {k: v.to('cpu')  for k, v in batch.items()}
             outputs = model(**batch)
             loss = outputs.loss
             loss.backward()
@@ -97,7 +97,6 @@ def bert_modelling():
     with mlflow.start_run() as run:
         input_examples = train_data['text'][: 4].values.tolist()
         encoded_inputs = get_encoding(input_examples)
-        model.to("cpu")
         signature = infer_signature(input_examples, model(**encoded_inputs).logits.detach().numpy().tolist())
         
         mlflow.pytorch.log_model(
