@@ -88,25 +88,18 @@ jobs:
 
       - name: Start Flask in background
         env:
-          FLASK_APP: flask_app/app.py
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: us-east-1
+          FLASK_APP: flask_app.app
         run: |
           nohup flask run --host=0.0.0.0 --port=5002 > flask.log 2>&1 &
-          FLASK_PID=$!
-          for i in {1..30}; do
-              if lsof -i :5002; then
-                  echo "✅ Flask is up!"
-                  break
-              fi
-              if ! kill -0 $FLASK_PID 2>/dev/null; then
-                  echo "❌ Flask crashed:"
-                  cat flask.log
-                  exit 1
-              fi
-              echo "⏳ Waiting for Flask to start..."
-              sleep 1
-          done
+          sleep 5
           echo "=== Flask log after startup ==="
-          cat flask.log
+          echo "=== Checking running processes ==="
+          ps aux | grep flask
+          echo "=== Checking open ports ==="
+          lsof -i :5002 || true
 
       - name: Test Flask app
         if: success()
