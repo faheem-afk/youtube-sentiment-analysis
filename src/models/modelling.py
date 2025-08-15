@@ -73,7 +73,7 @@ def bert_modelling():
     )
 
     total_loss = 0.0
-    for epoch in range(10):
+    for epoch in range(3):
         model.train()
         train_epoch_loss = 0.0
         for batch in train_loader:
@@ -113,7 +113,7 @@ def bert_modelling():
             mlmodel_data = yaml.safe_load(f)
 
         artifact_path = mlmodel_data.get("artifact_path")
-        save_artifact_info(artifact_path, run_id, 'experiment_info.json')
+        save_artifact_info(artifact_path, run.run_info.run_id, 'experiment_info.json')
     
 
 if __name__ == "__main__":
