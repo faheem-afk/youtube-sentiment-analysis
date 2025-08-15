@@ -19,9 +19,9 @@ def eval_():
     param_path = 'params.yaml'
     params = load_params(param_path)
     
-    model = AutoModelForSequenceClassification.from_pretrained("bert-base-uncased", num_labels=3).to('cpu')
+    model_info = json.load(open('experiment_info.json', 'r'))
     
-    model.load_state_dict(torch.load("model/model_mps.pth", map_location="cpu"))
+    model = mlflow.pytorch.load_model(model_info['artifact_uri'])
     model.eval()
     
     data = load_data('data/processed/test_data.csv').dropna()

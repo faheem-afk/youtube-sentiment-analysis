@@ -26,15 +26,10 @@ stages:
     deps:
     - data/processed/test_data.csv
     - src/models/evaluation.py
-
-    outs:
-    - experiment_info.json
   
-
   register_model:
     cmd: python src/models/register_model.py
-    deps:
-    - experiment_info.json
+  
 
 
   
