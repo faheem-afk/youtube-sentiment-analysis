@@ -87,10 +87,11 @@ jobs:
           python scripts/promote_model.py
 
       - name: Start Flask in background
+        env:
+          FLASK_APP: flask_app/app.py
         run: |
-          export FLASK_APP=flask_app/app.py
           nohup flask run --host=0.0.0.0 --port=5002 > flask.log 2>&1 &
-          sleep 40  # wait for server to start
+          sleep 5  # wait for server to start
 
       - name: Test Flask app
         if: success()
