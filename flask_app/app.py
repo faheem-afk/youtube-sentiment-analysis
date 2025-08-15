@@ -26,7 +26,8 @@ CORS(app)
 labels= {0:'negative', 1: "neutral", 2: "positive"}
 file = open("experiment_info.json", 'r')
 model_uri = json.load(file)['artifact_uri']
-model = mlflow.pytorch.load_model(model_uri).to('mps')
+model = mlflow.pytorch.load_model(model_uri)
+model.to('cpu')
 model.eval()
 stopwords = set(STOPWORDS)
 
@@ -39,7 +40,7 @@ def home():
 @torch.inference_mode()
 def encoding_text(text):
     inputs = get_encoding(text)
-    inputs = {k: v.to('mps') for k, v in inputs.items()}
+    inputs = {k: v.to('cpu') for k, v in inputs.items()}
     return inputs
 
 
