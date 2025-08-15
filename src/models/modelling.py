@@ -3,6 +3,7 @@ from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import torch
 from torch.optim import AdamW
 from dataset_ import MyDataSet
+import sys, os
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../..'))
 from utils import *
 from mlflow.models import infer_signature
@@ -61,7 +62,7 @@ def bert_modelling():
 
     train_loader = DataLoader(train_ds, shuffle=True, batch_size=32, drop_last=True)
 
-    model = AutoModelForSequenceClassification.from_pretrained("bert-base-uncased", num_labels=3).to('cpu')
+    model = AutoModelForSequenceClassification.from_pretrained("bert-base-uncased", num_labels=3).to('mps')
 
     optimizer = AdamW(
         model.parameters(),       
@@ -77,7 +78,7 @@ def bert_modelling():
         train_epoch_loss = 0.0
         for batch in train_loader:
             optimizer.zero_grad()
-            batch = {k: v.to('cpu')  for k, v in batch.items()}
+            batch = {k: v.to('mps')  for k, v in batch.items()}
             outputs = model(**batch)
             loss = outputs.loss
             loss.backward()
@@ -96,7 +97,7 @@ def bert_modelling():
     with mlflow.start_run() as run:
         input_examples = train_data['text'][: 4].values.tolist()
         encoded_inputs = get_encoding(input_examples)
-        
+        model.to("cpu")
         signature = infer_signature(input_examples, model(**encoded_inputs).logits.detach().numpy().tolist())
         
         mlflow.pytorch.log_model(
