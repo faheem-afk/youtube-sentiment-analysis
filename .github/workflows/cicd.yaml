@@ -84,7 +84,7 @@ jobs:
       - name: Promote model to production
         if: success()
         run: |
-          pytest scripts/promote_model.py
+          promote_model.py
 
       - name: Start Flask in background
         run: |
