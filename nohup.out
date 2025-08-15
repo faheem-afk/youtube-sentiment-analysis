@@ -1,6 +1,5 @@
-Downloading artifacts:  83%|████████▎ | 5/6 [46:06<00:00,  8.94it/s]Downloading artifacts: 100%|██████████| 6/6 [46:06<00:00, 631.68s/it]Downloading artifacts: 100%|██████████| 6/6 [46:06<00:00, 631.68s/it]Downloading artifacts: 100%|██████████| 6/6 [46:06<00:00, 461.15s/it]
+Downloading artifacts:   0%|          | 0/6 [00:00<?, ?it/s]Downloading artifacts:  17%|█▋        | 1/6 [00:00<00:00, 3744.91it/s]Downloading artifacts:  33%|███▎      | 2/6 [00:00<00:00, 27.44it/s]  Downloading artifacts:  50%|█████     | 3/6 [00:00<00:00, 17.36it/s]Downloading artifacts:  50%|█████     | 3/6 [00:00<00:00, 17.36it/s]Downloading artifacts:  67%|██████▋   | 4/6 [00:00<00:00, 17.36it/s]Downloading artifacts:  83%|████████▎ | 5/6 [00:00<00:00, 10.60it/s]Downloading artifacts:  83%|████████▎ | 5/6 [00:00<00:00, 10.60it/s]Downloading artifacts:  83%|████████▎ | 5/6 [00:20<00:00, 10.60it/s]Downloading artifacts: 100%|██████████| 6/6 [00:20<00:00,  5.20s/it]Downloading artifacts: 100%|██████████| 6/6 [00:20<00:00,  5.20s/it]Downloading artifacts: 100%|██████████| 6/6 [00:20<00:00,  3.39s/it]
  * Serving Flask app 'flask_app/app.py'
  * Debug mode: off
-Address already in use
-Port 5000 is in use by another program. Either identify and stop that program, or start the server with a different port.
-On macOS, try disabling the 'AirPlay Receiver' service from System Preferences -> General -> AirDrop & Handoff.
+/opt/anaconda3/lib/python3.12/multiprocessing/resource_tracker.py:254: UserWarning: resource_tracker: There appear to be 1 leaked semaphore objects to clean up at shutdown
+  warnings.warn('resource_tracker: There appear to be %d '
