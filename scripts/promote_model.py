@@ -3,7 +3,7 @@ import mlflow
 
 def promote_model():
     
-    mlflow.set
+    mlflow.set_tracking_uri("http://35.175.240.84:5000")
     
     client = mlflow.MlflowClient()
     
@@ -24,7 +24,7 @@ def promote_model():
             stage="Production"
                 
         )
-    
-if __name__ "__main__":
+
+
+if __name__ == "__main__":
     promote_model()
-    
