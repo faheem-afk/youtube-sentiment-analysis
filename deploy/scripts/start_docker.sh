@@ -15,7 +15,7 @@ if [ "$(docker ps -q -f name=container-app)" ]; then
     docker stop container-app
     echo "Removing existing container..."
     docker rm container-app
-if
+fi
 
 echo "Starting new container..."
 docker run -d -p 80:5000 --name container-app 596514762357.dkr.ecr.us-east-1.amazonaws.com/ysa-ecr:latest
