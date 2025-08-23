@@ -93,10 +93,19 @@ jobs:
           AWS_DEFAULT_REGION: us-east-1
           FLASK_APP: flask_app.app
         run: |
+
           nohup flask run --host=0.0.0.0 --port=5000 > flask.log 2>&1 &
           sleep 5
           echo "=== Flask log after startup ==="
          
+          nohup flask run --host=0.0.0.0 --port=5002 > flask.log 2>&1 &
+          sleep 5
+          echo "=== Flask log after startup ==="
+          echo "=== Checking running processes ==="
+          ps aux | grep flask
+          echo "=== Checking open ports ==="
+          lsof -i :5002 || true
+
       - name: Test Flask app
         if: success()
         run: |
@@ -126,6 +135,7 @@ jobs:
         if: success()
         run: |
           docker push 596514762357.dkr.ecr.us-east-1.amazonaws.com/ysa-ecr:latest
+
 
           
         
