@@ -30,7 +30,7 @@ stopwords = set(STOPWORDS)
 
 @app.route('/', methods=['GET'])
 def home():
-    return {"message": "hello"}
+    return "Welcome to my Youtube Sentiment Analysis App!"
 
 
 @torch.inference_mode()
