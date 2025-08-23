@@ -1,19 +1,19 @@
-stages:
-  data_ingestion:
-    cmd: python -m src.data.data_ingestion
-    deps:
-    - src/data/data_ingestion.py
-    outs:
-    - data/raw/data.csv
+# stages:
+#   data_ingestion:
+#     cmd: python -m src.data.data_ingestion
+#     deps:
+#     - src/data/data_ingestion.py
+#     outs:
+#     - data/raw/data.csv
 
-  data_preprocessing:
-    cmd: python -m src.data.data_preprocessing
-    deps:
-    - data/raw/data.csv
-    - src/data/data_preprocessing.py
-    outs:
-    - data/processed/test_data.csv
-    - data/processed/train_data.csv
+#   data_preprocessing:
+#     cmd: python -m src.data.data_preprocessing
+#     deps:
+#     - data/raw/data.csv
+#     - src/data/data_preprocessing.py
+#     outs:
+#     - data/processed/test_data.csv
+#     - data/processed/train_data.csv
 
   # model_training:
   #   cmd: python src/models/modelling.py
@@ -21,14 +21,14 @@ stages:
   #   - data/processed/train_data.csv
   #   - src/models/modelling.py
  
-  evaluation:
-    cmd: python src/models/evaluation.py
-    deps:
-    - data/processed/test_data.csv
-    - src/models/evaluation.py
+  # evaluation:
+  #   cmd: python src/models/evaluation.py
+  #   deps:
+  #   - data/processed/test_data.csv
+  #   - src/models/evaluation.py
   
-  register_model:
-    cmd: python src/models/register_model.py
+  # register_model:
+  #   cmd: python src/models/register_model.py
   
 
 
