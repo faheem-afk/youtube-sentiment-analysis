@@ -6,9 +6,7 @@ from dataset_ import MyDataSet
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../..'))
 from utils import *
-from mlflow.models import infer_signature
-from mlflow.tracking import MlflowClient
-import mlflow
+
 
 
 def load_params(params_path: str) -> dict:

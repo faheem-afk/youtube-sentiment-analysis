@@ -93,14 +93,10 @@ jobs:
           AWS_DEFAULT_REGION: us-east-1
           FLASK_APP: flask_app.app
         run: |
-          nohup flask run --host=0.0.0.0 --port=5002 > flask.log 2>&1 &
+          nohup flask run --host=0.0.0.0 --port=5000 > flask.log 2>&1 &
           sleep 5
           echo "=== Flask log after startup ==="
-          echo "=== Checking running processes ==="
-          ps aux | grep flask
-          echo "=== Checking open ports ==="
-          lsof -i :5002 || true
-
+         
       - name: Test Flask app
         if: success()
         run: |
@@ -109,7 +105,27 @@ jobs:
       - name: Stop Flask
         run: pkill -f "flask run"
 
+      - name: Login to AWS ECR
+        if: success()
+        run : |
+          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws configure set aws_secret_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws ecr get-login-password --region us-east-1 | docker login -username AWS --password-stdin 596514762357.dkr.ecr.us-east-1.amazonaws.com
+
+      - name: Build Docker Image
+        if: success()
+        run: |
+          docker build -t ysa-ecr .
+
+      - name: Tag Docker Image
+        if: success()
+        run: |
+          docker tag ysa-ecr:latest 596514762357.dkr.ecr.us-east-1.amazonaws.com/ysa-ecr:latest
       
+      - name: Push Docker Image to AWS ECR
+        if: success()
+        run: |
+          docker push 596514762357.dkr.ecr.us-east-1.amazonaws.com/ysa-ecr:latest
 
           
         

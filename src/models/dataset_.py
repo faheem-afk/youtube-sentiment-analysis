@@ -1,5 +1,4 @@
 from torch.utils.data import Dataset
-import torch
 
 class MyDataSet(Dataset):
     def __init__(self, data, tokenizer, max_len):

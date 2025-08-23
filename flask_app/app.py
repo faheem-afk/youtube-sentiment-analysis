@@ -1,33 +1,25 @@
 import pandas as pd
 from datetime import datetime
 import torch
-import mlflow
-from transformers import AutoTokenizer
-import sys, os
-sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
 from utils import get_encoding
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-import seaborn as sns
 from collections import Counter
-import io, base64, math
-
+import io, base64
 from wordcloud import WordCloud, STOPWORDS
 import matplotlib.pyplot as plt
-import json
 
 app = Flask(__name__)
 CORS(app)
 
 
 labels= {0:'negative', 1: "neutral", 2: "positive"}
-file = open("experiment_info.json", 'r')
-model_uri = json.load(file)['artifact_uri']
-model = mlflow.pytorch.load_model(model_uri)
-model.to('cpu')
+# file = open("experiment_info.json", 'r')
+# model_uri = json.load(file)['artifact_uri']
+model = torch.load('model.pth', map_location='cpu', weights_only=False)
 model.eval()
 stopwords = set(STOPWORDS)
 
@@ -180,7 +172,7 @@ def predict():
         
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', debug=True, port=5002)
+    app.run(host='0.0.0.0', debug=True, port=5000)
 
 
 
