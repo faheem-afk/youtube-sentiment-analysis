@@ -4,7 +4,7 @@ sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../..'
 from utils import *
 from sklearn.metrics import classification_report
 import torch
-from transformers import AutoTokenizer
+from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import mlflow
 from dataset_ import MyDataSet
 from torch.utils.data import DataLoader
@@ -14,15 +14,12 @@ from mlflow.tracking import MlflowClient
 
 def eval_():
     
-    # current_dir_name = os.path.dirname(os.path.abspath(__file__))
     param_path = 'params.yaml'
     params = load_params(param_path)
     
-    # model_info = json.load(open('experiment_info.json', 'r'))
-    
-    # model = mlflow.pytorch.load_model(model_info['artifact_uri'])
-    model = torch.load('flask_app/model.pth', map_location='cpu', weights_only=False)
-    
+    file = open("experiment_info.json", 'r')
+    model_uri = json.load(file)['artifact_uri']
+    model = mlflow.pytorch.load_model(model_uri)
     model.eval()
     
     data = load_data('data/processed/test_data.csv').dropna()

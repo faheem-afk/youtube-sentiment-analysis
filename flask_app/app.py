@@ -11,15 +11,18 @@ from collections import Counter
 import io, base64
 from wordcloud import WordCloud, STOPWORDS
 import matplotlib.pyplot as plt
+import json
+import mlflow
+
 
 app = Flask(__name__)
 CORS(app)
 
 
 labels= {0:'negative', 1: "neutral", 2: "positive"}
-# file = open("experiment_info.json", 'r')
-# model_uri = json.load(file)['artifact_uri']
-model = torch.load('model.pth', map_location='cpu', weights_only=False)
+file = open("experiment_info.json", 'r')
+model_uri = json.load(file)['artifact_uri']
+model = mlflow.pytorch.load_model(model_uri)
 model.eval()
 stopwords = set(STOPWORDS)
 
