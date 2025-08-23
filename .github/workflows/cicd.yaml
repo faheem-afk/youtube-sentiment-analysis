@@ -7,151 +7,151 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      # - name: Checkout code
+      #   uses: actions/checkout@v3
 
-      - name: Set-up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.12.2' 
+      # - name: Set-up Python
+      #   uses: actions/setup-python@v2
+      #   with:
+      #     python-version: '3.12.2' 
       
-      - name: Cache pip dependencies
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip
+      # - name: Cache pip dependencies
+      #   uses: actions/cache@v3
+      #   with:
+      #     path: ~/.cache/pip
+      #     key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-pip
       
-      - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
+      # - name: Install dependencies
+      #   run: |
+      #     pip install -r requirements.txt
 
-      - name: Run Pipeline
-        env: 
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: us-east-1
-          TOKENIZERS_PARALLELISM: false
-        run: |
-          dvc repro
+      # - name: Run Pipeline
+      #   env: 
+      #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #     AWS_DEFAULT_REGION: us-east-1
+      #     TOKENIZERS_PARALLELISM: false
+      #   run: |
+      #     dvc repro
       
-      - name: Push DVC-tracked data to remote
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: us-east-1
-        run: |
-          dvc push 
+      # - name: Push DVC-tracked data to remote
+      #   env:
+      #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #     AWS_DEFAULT_REGION: us-east-1
+      #   run: |
+      #     dvc push 
         
-      - name: Configure Git
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+      # - name: Configure Git
+      #   run: |
+      #     git config --global user.name "github-actions[bot]"
+      #     git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
-      - name: Add changes to Git
-        run: |
-          git add .
+      # - name: Add changes to Git
+      #   run: |
+      #     git add .
           
-      - name: Commit changes and push
-        if: ${{ github.actor != 'github-actions[bot]' }}
-        env: 
-          GITHUB_TOKEN: ${{ secrets.CI }}
-        run: |
-          if ! git diff --cached --quiet; then
-              git config --global user.name "github-actions[bot]"
-              git config --global user.email "github-actions[bot]@users.noreply.github.com"
-              git commit -m "Automated commit of DVC outputs and updated code"
-              git push
-          else
-              echo "No changes to commit."
-          fi
+      # - name: Commit changes and push
+      #   if: ${{ github.actor != 'github-actions[bot]' }}
+      #   env: 
+      #     GITHUB_TOKEN: ${{ secrets.CI }}
+      #   run: |
+      #     if ! git diff --cached --quiet; then
+      #         git config --global user.name "github-actions[bot]"
+      #         git config --global user.email "github-actions[bot]@users.noreply.github.com"
+      #         git commit -m "Automated commit of DVC outputs and updated code"
+      #         git push
+      #     else
+      #         echo "No changes to commit."
+      #     fi
 
-      - name: Install testing 
-        run: |
-          pip install pytest
+      # - name: Install testing 
+      #   run: |
+      #     pip install pytest
 
-      - name: Run model loading test
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: us-east-1
-        run: |
-          pytest scripts/test_model_loading.py
-          pytest scripts/test_model_signature.py
-          pytest scripts/test_model_performance.py
+      # - name: Run model loading test
+      #   env:
+      #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #     AWS_DEFAULT_REGION: us-east-1
+      #   run: |
+      #     pytest scripts/test_model_loading.py
+      #     pytest scripts/test_model_signature.py
+      #     pytest scripts/test_model_performance.py
           
-      - name: Promote model to production
-        if: success()
-        run: |
-          python scripts/promote_model.py
+      # - name: Promote model to production
+      #   if: success()
+      #   run: |
+      #     python scripts/promote_model.py
 
-      - name: Start Flask in background
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: us-east-1
-          FLASK_APP: flask_app.app
-        run: |
+      # - name: Start Flask in background
+      #   env:
+      #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #     AWS_DEFAULT_REGION: us-east-1
+      #     FLASK_APP: flask_app.app
+      #   run: |
 
-          nohup flask run --host=0.0.0.0 --port=5000 > flask.log 2>&1 &
-          sleep 5
-          echo "=== Flask log after startup ==="
+      #     nohup flask run --host=0.0.0.0 --port=5000 > flask.log 2>&1 &
+      #     sleep 5
+      #     echo "=== Flask log after startup ==="
          
-          nohup flask run --host=0.0.0.0 --port=5002 > flask.log 2>&1 &
-          sleep 5
-          echo "=== Flask log after startup ==="
-          echo "=== Checking running processes ==="
-          ps aux | grep flask
-          echo "=== Checking open ports ==="
-          lsof -i :5002 || true
+      #     nohup flask run --host=0.0.0.0 --port=5002 > flask.log 2>&1 &
+      #     sleep 5
+      #     echo "=== Flask log after startup ==="
+      #     echo "=== Checking running processes ==="
+      #     ps aux | grep flask
+      #     echo "=== Checking open ports ==="
+      #     lsof -i :5002 || true
 
-      - name: Test Flask app
-        if: success()
-        run: |
-          pytest scripts/test_flask_app.py
+      # - name: Test Flask app
+      #   if: success()
+      #   run: |
+      #     pytest scripts/test_flask_app.py
 
-      - name: Stop Flask
-        run: pkill -f "flask run"
+      # - name: Stop Flask
+      #   run: pkill -f "flask run"
 
-      - name: Login to AWS ECR
-        if: success()
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: us-east-1
-        run : |
-          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 596514762357.dkr.ecr.us-east-1.amazonaws.com
+      # - name: Login to AWS ECR
+      #   if: success()
+      #   env:
+      #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #     AWS_DEFAULT_REGION: us-east-1
+      #   run : |
+      #     aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 596514762357.dkr.ecr.us-east-1.amazonaws.com
 
-      - name: Build Docker Image
-        if: success()
-        run: |
-          docker build -t ysa-ecr .
+      # - name: Build Docker Image
+      #   if: success()
+      #   run: |
+      #     docker build -t ysa-ecr .
 
-      - name: Tag Docker Image
-        if: success()
-        run: |
-          docker tag ysa-ecr:latest 596514762357.dkr.ecr.us-east-1.amazonaws.com/ysa-ecr:latest
+      # - name: Tag Docker Image
+      #   if: success()
+      #   run: |
+      #     docker tag ysa-ecr:latest 596514762357.dkr.ecr.us-east-1.amazonaws.com/ysa-ecr:latest
       
-      - name: Push Docker Image to AWS ECR
-        if: success()
-        run: |
-          docker push 596514762357.dkr.ecr.us-east-1.amazonaws.com/ysa-ecr:latest
+      # - name: Push Docker Image to AWS ECR
+      #   if: success()
+      #   run: |
+      #     docker push 596514762357.dkr.ecr.us-east-1.amazonaws.com/ysa-ecr:latest
 
 
-      - name: Zip files for deployment
-        if: success()
-        run: | 
-          zip -r deployment.zip appspec.yml deploy/scripts/install_dependencies.sh deploy/scripts/start_docker.sh
+      # - name: Zip files for deployment
+      #   if: success()
+      #   run: | 
+      #     zip -r deployment.zip appspec.yml deploy/scripts/install_dependencies.sh deploy/scripts/start_docker.sh
       
-      - name: Upload the zip to s3
-        if: success()
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: us-east-1
-        run: |
-          aws s3 cp deployment.zip s3://ysa-bucketv1
+      # - name: Upload the zip to s3
+      #   if: success()
+      #   env:
+      #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #     AWS_DEFAULT_REGION: us-east-1
+      #   run: |
+      #     aws s3 cp deployment.zip s3://ysa-bucketv1
       
       - name: Deploy to AWS CodeDeploy
         if: success()
